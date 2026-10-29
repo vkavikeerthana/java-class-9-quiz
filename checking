@@ -1,0 +1,181 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ICSE Class 9 Java Quiz</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f1f5f9;color:#172033;font-family:Arial,sans-serif}
+header{background:#172554;color:white;padding:25px 16px;text-align:center}
+header h1{margin:0 0 8px;font-size:26px}
+header p{margin:0;color:#dbeafe}
+main{max-width:760px;margin:24px auto;padding:0 14px}
+.card{background:white;padding:24px;border-radius:16px;box-shadow:0 4px 18px #0000000c}
+.info{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;color:#475569;font-size:14px}
+.track{height:8px;background:#e2e8f0;border-radius:9px;margin:16px 0 24px;overflow:hidden}
+#bar{height:100%;width:0;background:#2563eb;transition:width .2s}
+h2{font-size:21px;line-height:1.5}
+.option{display:flex;align-items:flex-start;gap:12px;border:1px solid #cbd5e1;padding:14px;margin:10px 0;border-radius:10px;cursor:pointer;line-height:1.4}
+.option:hover{background:#eff6ff}
+.option:has(input:checked){border-color:#2563eb;background:#eff6ff}
+.option input{margin-top:3px;accent-color:#2563eb}
+.buttons{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap}
+button{border:0;border-radius:9px;padding:12px 18px;font-size:15px;font-weight:bold;cursor:pointer}
+.primary{background:#2563eb;color:white}
+.secondary{background:#e2e8f0;color:#172033}
+button:disabled{opacity:.4;cursor:not-allowed}
+#result{margin-top:18px}
+.review{border-top:1px solid #e2e8f0;padding:16px 0;line-height:1.55}
+.good{color:#15803d;font-weight:bold}
+.bad{color:#b91c1c;font-weight:bold}
+.hidden{display:none}
+.small{color:#64748b;font-size:13px;line-height:1.5}
+footer{text-align:center;color:#64748b;padding:24px;font-size:13px}
+</style>
+</head>
+<body>
+<header>
+<h1>Java Challenge</h1>
+<p>ICSE Class 9 Computer Applications</p>
+<p style="margin-top:12px">30 MCQs · Moderate & Difficult · Higher-Order Thinking</p>
+</header>
+<main>
+<section class="card" id="quiz">
+<div class="info">
+<span id="counter">Question 1 of 30</span>
+<span id="answered">Answered: 0 / 30</span>
+</div>
+<div class="track"><div id="bar"></div></div>
+<div id="topic" class="small"></div>
+<h2 id="question"></h2>
+<div id="options"></div>
+<div class="buttons">
+<button class="secondary" id="prev" onclick="move(-1)">← Previous</button>
+<button class="primary" id="next" onclick="move(1)">Next →</button>
+<button class="primary hidden" id="submit" onclick="finish()">Submit quiz</button>
+</div>
+<p class="small">Your answers and score remain hidden until you submit the quiz.</p>
+</section>
+<section class="card hidden" id="result">
+<h2 id="scoreTitle">Your results</h2>
+<p id="scoreText"></p>
+<button class="primary" onclick="showReview()">Review answers and explanations</button>
+<button class="secondary" onclick="restart()">Try again</button>
+<div id="review" class="hidden"></div>
+</section>
+</main>
+<footer>ICSE Class 9 Java Practice · Learn, practise and improve</footer>
+<script>
+const questions = [
+{t:"OOP Characteristics",q:"A banking application lets customers deposit money without revealing the internal balance calculations. Which concept is most directly demonstrated?",o:["Inheritance","Abstraction","Polymorphism","Compilation"],a:1,e:"Abstraction exposes essential operations while hiding unnecessary implementation details."},
+{t:"OOP Characteristics",q:"Animal defines common features. Dog and Cat reuse those features and add their own behaviour. Which OOP characteristic enables this?",o:["Encapsulation","Abstraction","Inheritance","Portability"],a:2,e:"Inheritance allows subclasses to acquire accessible features from a superclass."},
+{t:"OOP Characteristics",q:"A class has several methods named display(), each with a different parameter list. Which concept is demonstrated?",o:["Method overloading","Data abstraction","Data hiding","Compilation"],a:0,e:"Method overloading uses the same method name with different parameter lists."},
+{t:"OOP Characteristics",q:"A programmer combines data fields and related methods in a class and restricts direct access to certain fields. Which concept is most directly demonstrated?",o:["Platform independence","Compilation","Inheritance","Encapsulation"],a:3,e:"Encapsulation bundles data and related methods and can control access to data."},
+{t:"OOP Characteristics",q:"Which statement best explains why Java is considered object-oriented?",o:["Every statement creates an object","Java supports classes, objects, inheritance and polymorphism","Java source runs directly on the processor","Java stores only numerical data"],a:1,e:"Java supports classes and objects along with important OOP mechanisms such as inheritance and polymorphism."},
+{t:"Compilation Process",q:"Which sequence correctly describes the usual Java compilation and execution process?",o:["Source → JVM → compiler → bytecode","Bytecode → source → compiler → JVM","Source → Java compiler → bytecode → JVM","Source → processor directly → class file"],a:2,e:"The compiler translates source code into bytecode; the JVM executes that bytecode."},
+{t:"Compilation Process",q:"What does a successfully compiled Test.class file normally contain?",o:["Java bytecode","Only source comments","The original source renamed","Machine code for only one processor"],a:0,e:"A Java class file normally contains bytecode for execution by a compatible JVM."},
+{t:"Compilation Process",q:"A compiled Java program runs on different operating systems with compatible JVMs. What best explains this?",o:["All computers have identical processors","Identifiers are case-insensitive","Every JVM is a compiler","Bytecode can run on compatible JVM implementations"],a:3,e:"The JVM provides a platform-specific environment for executing platform-independent bytecode."},
+{t:"Compilation Process",q:"A Java source file contains a syntax error. At which stage is it ordinarily detected?",o:["Only after execution","During compilation","When the keyboard loads","When the file is renamed"],a:1,e:"The Java compiler checks source syntax and reports syntax errors."},
+{t:"Compilation Process",q:"A program compiles successfully but encounters division by zero during execution. What does this demonstrate?",o:["Compilation guarantees correct execution","The JVM cannot execute bytecode","Some errors arise only during execution","The source was never compiled"],a:2,e:"Successful compilation does not guarantee that every runtime operation will succeed."},
+{t:"Identifiers",q:"Which proposed Java identifier is valid?",o:["9students","student-name","total_marks","while"],a:2,e:"An identifier may contain letters, digits and underscores, but cannot begin with a digit or be a reserved keyword."},
+{t:"Identifiers",q:"Consider marks, Marks and MARKS. Which statement is correct?",o:["They are three distinct identifiers","They are the same identifier","Only marks is valid","MARKS is invalid"],a:0,e:"Java is case-sensitive, so differences in capitalization distinguish identifiers."},
+{t:"Identifiers",q:"Which pair contains only valid Java identifiers?",o:["class, student1","_total, score2","2score, total","net-value, average"],a:1,e:"_total and score2 are valid; the other pairs each contain a keyword or invalid identifier."},
+{t:"Variables",q:"A student writes int number; and later number = 20;. Which interpretation is correct?",o:["The declaration is invalid","number becomes a constant","number becomes a String","The variable is declared and later assigned a value"],a:3,e:"Declaration introduces the variable; a later assignment supplies its value."},
+{t:"Variables",q:"What is wrong with this code? int age; System.out.println(age);",o:["It always prints zero","It prints null","The local variable is read before it is assigned","It prints a random integer"],a:2,e:"Java requires a local variable to be definitely assigned before it is read."},
+{t:"Variables",q:"Which declaration correctly stores a percentage such as 87.5?",o:["int percentage = 87.5;","double percentage = 87.5;","char percentage = 87.5;","boolean percentage = 87.5;"],a:1,e:"double can represent fractional numeric values such as 87.5."},
+{t:"Variables",q:"Consider int a = 5; double b = a;. Which statement is correct?",o:["Both are invalid","b must use a decimal literal","Both are valid; int can widen to double","a changes its type to double"],a:2,e:"Java permits widening conversion from int to double, so b receives 5.0."},
+{t:"Variables",q:"Which declaration is invalid?",o:["int count = 10;","double rate = 2.5;","char grade = 'A';","boolean passed = 1;"],a:3,e:"A boolean variable must be assigned true or false, not the integer 1."},
+{t:"Variables",q:"Which declaration correctly stores the character K?",o:["char initial = 'K';","char initial = \"K\";","String initial = 'K';","boolean initial = 'K';"],a:0,e:"A char literal uses single quotation marks. Double quotation marks create a String literal."},
+{t:"Variables",q:"Consider int x = 10; x = 15; int y = x;. What is the value of y?",o:["10","15","25","0"],a:1,e:"x is reassigned to 15 before y receives its value."},
+{t:"Compilation Process",q:"Which component translates a .java source file into a .class file?",o:["JVM","Java compiler","Operating system","Text editor"],a:1,e:"The Java compiler, commonly invoked using javac, generates class files."},
+{t:"Compilation Process",q:"A Java program runs on two operating systems with compatible JVMs. Which conclusion is most accurate?",o:["Both must use the same processor","Source code is automatically rewritten","Bytecode and compatible JVMs support portability","Compilation is unnecessary"],a:2,e:"Java bytecode can be executed by compatible JVM implementations on different platforms."},
+{t:"Compilation Process",q:"Which file is normally produced when Student.java is successfully compiled?",o:["Student.exe","Student.class","Student.txt","Student.doc"],a:1,e:"The Java compiler normally produces a .class file containing bytecode."},
+{t:"Compilation Process",q:"A programmer changes only a comment in a Java program. Which statement is most accurate?",o:["Comments are normally ignored and do not change program behaviour","The JVM executes the comment","The compiler converts it into a variable","The comment prevents compilation"],a:0,e:"Java comments are not executable statements and normally do not affect program behaviour."},
+{t:"Compilation Process",q:"Which statement best distinguishes the Java compiler from the JVM?",o:["Both only edit source code","The compiler executes bytecode","The compiler translates source to bytecode; the JVM executes it","The JVM only checks variable names"],a:2,e:"The compiler and JVM have different roles: translation and execution, respectively."},
+{t:"Identifiers",q:"Which is a valid Java declaration?",o:["int total marks = 90;","int totalMarks = 90;","int int = 90;","int 1total = 90;"],a:1,e:"totalMarks is a valid identifier. Spaces, reserved keywords and leading digits are not permitted in these positions."},
+{t:"Variables",q:"What is stored in result? int a = 8; int b = 3; double result = a / b;",o:["2.6666667","3.0","2.0","2.5"],a:2,e:"Both operands are int, so integer division produces 2. Assigning that result to double converts it to 2.0."},
+{t:"Variables",q:"Which statement about variable declaration and initialization is correct?",o:["Initialization assigns the first value to a variable","Every declaration must contain a value","A variable changes type automatically","Local variables can be read before assignment"],a:0,e:"Initialization supplies a variable's initial value. A local variable must be assigned before it is read."},
+{t:"Variables",q:"Which declaration correctly stores the number of students in a class?",o:["boolean students = 40;","char students = 40;","int students = 40;","String students = 40;"],a:2,e:"int is appropriate for a whole-number count. The other declarations have incompatible types or values."},
+{t:"Variables",q:"Consider int marks = 75; double average = marks; marks = 80;. What are the final values?",o:["marks=80, average=80.0","marks=75, average=75.0","marks=80, average=75.0","marks=75, average=80.0"],a:2,e:"average receives a copy of marks when marks is 75. Changing marks later does not change average."}
+];
+
+let current=0;
+let answers=Array(questions.length).fill(null);
+let submitted=false;
+
+function render(){
+ const q=questions[current];
+ document.getElementById("counter").textContent=`Question ${current+1} of ${questions.length}`;
+ document.getElementById("answered").textContent=`Answered: ${answers.filter(a=>a!==null).length} / ${questions.length}`;
+ document.getElementById("bar").style.width=`${(current+1)/questions.length*100}%`;
+ document.getElementById("topic").textContent=q.t;
+ document.getElementById("question").textContent=q.q;
+ const box=document.getElementById("options");
+ box.replaceChildren();
+ q.o.forEach((option,i)=>{
+   const label=document.createElement("label");
+   label.className="option";
+   const input=document.createElement("input");
+   input.type="radio";input.name="answer";input.value=i;
+   input.checked=answers[current]===i;
+   input.addEventListener("change",()=>{
+     answers[current]=i;
+     document.getElementById("answered").textContent=`Answered: ${answers.filter(a=>a!==null).length} / ${questions.length}`;
+   });
+   const span=document.createElement("span");
+   span.textContent=String.fromCharCode(65+i)+". "+option;
+   label.append(input,span);box.append(label);
+ });
+ document.getElementById("prev").disabled=current===0;
+ document.getElementById("next").classList.toggle("hidden",current===questions.length-1);
+ document.getElementById("submit").classList.toggle("hidden",current!==questions.length-1);
+}
+function move(delta){
+ current=Math.max(0,Math.min(questions.length-1,current+delta));
+ render();window.scrollTo({top:0,behavior:"smooth"});
+}
+function finish(){
+ const unanswered=answers.filter(a=>a===null).length;
+ if(unanswered>0&&!confirm(`You have ${unanswered} unanswered questions. Submit anyway?`))return;
+ submitted=true;
+ const score=questions.reduce((n,q,i)=>n+(answers[i]===q.a?1:0),0);
+ document.getElementById("quiz").classList.add("hidden");
+ document.getElementById("result").classList.remove("hidden");
+ document.getElementById("scoreTitle").textContent=`Your score: ${score} / ${questions.length}`;
+ const pct=Math.round(score/questions.length*100);
+ document.getElementById("scoreText").textContent=`Percentage: ${pct}%. ${pct>=85?"Excellent work!":pct>=65?"Good effort! Review the questions you missed.":"Keep practising and review the explanations below."}`;
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+function showReview(){
+ const box=document.getElementById("review");
+ box.classList.remove("hidden");box.replaceChildren();
+ questions.forEach((q,i)=>{
+   const div=document.createElement("div");div.className="review";
+   const title=document.createElement("h3");
+   title.textContent=`${i+1}. ${q.q}`;
+   const result=document.createElement("p");
+   result.className=answers[i]===q.a?"good":"bad";
+   result.textContent=answers[i]===q.a?"Correct":"Incorrect or unanswered";
+   const your=document.createElement("p");
+   your.textContent="Your answer: "+(answers[i]===null?"Not answered":String.fromCharCode(65+answers[i])+". "+q.o[answers[i]]);
+   const correct=document.createElement("p");
+   correct.textContent="Correct answer: "+String.fromCharCode(65+q.a)+". "+q.o[q.a];
+   const explanation=document.createElement("p");
+   explanation.textContent="Explanation: "+q.e;
+   div.append(title,result,your,correct,explanation);box.append(div);
+ });
+ box.scrollIntoView({behavior:"smooth"});
+}
+function restart(){
+ current=0;answers=Array(questions.length).fill(null);submitted=false;
+ document.getElementById("result").classList.add("hidden");
+ document.getElementById("review").classList.add("hidden");
+ document.getElementById("quiz").classList.remove("hidden");
+ render();window.scrollTo({top:0,behavior:"smooth"});
+}
+render();
+</script>
+</body>
+</html>
